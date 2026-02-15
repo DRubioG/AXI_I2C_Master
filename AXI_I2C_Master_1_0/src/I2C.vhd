@@ -45,14 +45,18 @@ IOBUF_inst : IOBUF
   
 
 
-  I2C_inst : entity work.I2C_controller
+  I2C_inst : entity work.I2C_phy
+    generic map (
+        G_FPGA_CLK => ,
+        G_I2C_CLK => 
+    )
     port map
     (
       CLK_I     => CLK_I,
       RST_N_I   => RST_N_I,
       EN_I      => EN_I,
-      ADDR_I    => ADDR_I,
-      WR_DATA_I => WR_DATA_I,
+      ADDRESS_I    => ADDR_I,
+      WRITE_DATA_I => WR_DATA_I,
       RD_DATA_O =>,
       READ_I  => READ_I,
       START_I => START_I,

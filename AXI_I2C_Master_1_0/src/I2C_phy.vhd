@@ -8,7 +8,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity I2C_controller is
+entity I2C_phy is
     generic (
         G_FPGA_CLK : integer := 100_000_000;
         G_I2C_CLK : integer := 400_000
@@ -55,7 +55,7 @@ entity I2C_controller is
     );
 end entity;
 
-architecture artl of I2C_controller is
+architecture rtl of I2C_phy is
 
 --! Estados de la máquina de estados.
 type fsm is (

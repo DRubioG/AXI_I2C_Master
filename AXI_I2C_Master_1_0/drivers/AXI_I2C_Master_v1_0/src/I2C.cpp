@@ -1,11 +1,13 @@
 #include "I2C.hpp"
 
 
+// Constructor de la clase I2C.
 I2C::I2C(uint32_t address)
 {
     _address = address;
 }
 
+// Destructor de la clase.
 I2C::~I2C()
 {
 }
@@ -63,7 +65,7 @@ void I2C::requestFrom(int slave, int size){
         return;
 
     
-    reg = Xil_In32(_address+CNTRL_REG);
+    uint32_t reg = Xil_In32(_address+CNTRL_REG);
     // Esritura del tamaño a leer
     Xil_Out32(_address+CNTRL_REG, reg | ( size<< SIZE_POS));
 

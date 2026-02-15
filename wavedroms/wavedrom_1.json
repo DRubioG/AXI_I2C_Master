@@ -1,0 +1,5 @@
+{ signal: [
+  { name: "SCL",        wave: "h0p.................1." },
+  { name: "SDA",        wave: "x033333334566666666501", data: ["AD1", "AD2", "AD3", "AD4", "AD5", "AD6", "AD7", "R/W", "ACK", "D7", "D6", "D5", "D4", "D3", "D2", "D1", "D0", "ACK"], phase: 0.5},
+  { name: "SDA",        wave: "x73......456.......57.", data: ["Start", "Address", "R/W", "ACK", "Data", "ACK", "Stop"], phase: 0.5}
+]}

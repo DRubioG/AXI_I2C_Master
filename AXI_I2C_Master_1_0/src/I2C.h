@@ -1,5 +1,5 @@
 /**
- * @file I2C.hpp
+ * @file I2C.h
  * @brief 
  * @version 0.1
  * @date 2026-02-15
@@ -27,24 +27,14 @@
 #define SIZE_POS 0
 #define READ_POS 8
 
-class I2C
-{
-private:
-    /* data */
-    uint32_t _address;
-public:
-/**
- * @brief Constructor de la clase I2C.
- * 
- * @param address Dirección del bloque IP en memoria.
- */
-    I2C(uint32 address);
 
-/**
- * @brief Destructor de la clase.
- * 
- */
-    ~I2C();
+typedef struct {
+    uint32_t _address;
+}I2C;
+
+
+void setAddress(I2C *i2c_obj, uint32_t address);
+
 
 /**
  * @brief Este método finaliza la operación del bloque IP del I2C.
@@ -55,13 +45,15 @@ public:
  * 
  * #define ADDRESS          0x40000000
  * 
- * I2C Wire(ADDRESS);
- * I2C.end();
+ * I2C Wire;
+ * setAddress(&Wire, ADDRESS);
+ * end(&Wire);
  * 
  * @endcode
  * 
  */
-    void end();
+void end(I2C *i2c_obj);
+
 
 /**
  * @brief Este método inicializa el bloque IP del I2C.
@@ -72,13 +64,14 @@ public:
  * 
  * #define ADDRESS          0x40000000
  * 
- * I2C Wire(ADDRESS);
- * I2C.begin();
+ * I2C Wire;
+ * setAddress(&Wire, ADDRESS);
+ * begin(&Wire);
  * 
  * @endcode
  * 
  */
-    void begin();
+void begin(I2C *i2c_obj);
 
 /**
  * @brief Este método inicia el sistema de transmisión de datos al esclavo por
@@ -96,19 +89,20 @@ public:
  * #define DATA1            0x30
  * #define DATA2            0x00
  * 
- * I2C Wire(ADDRESS);
- * I2C.begin();
+ * I2C Wire;
+ * setAddress(&Wire, ADDRESS);
+ * begin(&Wire);
  * ...
- * Wire.beginTransmission(SLAVE_ADDRESS);
- * Wire.write(DATA1);
- * Wire.write(DATA2);
- * Wire.endTransmission();
+ * beginTransmission(&Wire, SLAVE_ADDRESS);
+ * write(&Wire, DATA1);
+ * write(&Wire, DATA2);
+ * endTransmission(&Wire);
  * 
  * @endcode
  * 
  * @param slave Dirección I2C del esclavo. Rango: [0, 127].
  */
-    void beginTransmission(int slave);
+void beginTransmission(I2C *i2c_obj, int slave);
 
 
 /**
@@ -125,20 +119,21 @@ public:
  * #define DATA1            0x30
  * #define DATA2            0x00
  * 
- * I2C Wire(ADDRESS);
- * I2C.begin();
+ * I2C Wire;
+ * setAddress(&Wire, ADDRESS);
+ * begin(&Wire);
  * ...
- * Wire.beginTransmission(SLAVE_ADDRESS);
- * Wire.write(DATA1);
- * Wire.write(DATA2);
- * Wire.endTransmission();
+ * beginTransmission(&Wire, SLAVE_ADDRESS);
+ * write(&Wire, DATA1);
+ * write(&Wire, DATA2);
+ * endTransmission(&Wire);
  * 
  * @endcode
  * 
  * 
  * @param data Dato de 8 bits a transmitir al esclavo.
  */
-    void write(int data);
+void write(I2C *i2c_obj, int data);
 
 /**
  * @brief Este método finaliza el ciclo de transmisión de datos al esclavo.
@@ -152,18 +147,19 @@ public:
  * #define DATA1            0x30
  * #define DATA2            0x00
  * 
- * I2C Wire(ADDRESS);
- * I2C.begin();
+ * I2C Wire;
+ * setAddress(&Wire, ADDRESS);
+ * begin(&Wire);
  * ...
- * Wire.beginTransmission(SLAVE_ADDRESS);
- * Wire.write(DATA1);
- * Wire.write(DATA2);
- * Wire.endTransmission();
+ * beginTransmission(&Wire, SLAVE_ADDRESS);
+ * write(&Wire, DATA1);
+ * write(&Wire, DATA2);
+ * endTransmission(&Wire);
  * 
  * @endcode
  * 
  */
-    void endTransmission();
+void endTransmission(I2C *i2c_obj);
 
 /**
  * @brief Este método solicita al bloque IP de leer los datos consecutivos por 
@@ -180,22 +176,23 @@ public:
  * #define DATA1            0x30
  * #define DATA2            0x00
  * 
- * I2C Wire(ADDRESS);
- * I2C.begin();
+ * I2C Wire;
+ * setAddress(&Wire, ADDRESS);
+ * begin(&Wire);
  * ...
- * Wire.beginTransmission(SLAVE_ADDRESS);
- * Wire.write(DATA1);
- * Wire.write(DATA2);
- * Wire.endTransmission();
+ * beginTransmission(&Wire, SLAVE_ADDRESS);
+ * write(&Wire, DATA1);
+ * write(&Wire, DATA2);
+ * endTransmission(&Wire);
  * ...
- * Wire.requestFrom(SLAVE_ADDRESS, 2);
+ * requestFrom(&Wire, SLAVE_ADDRESS, 2);
  * 
  * @endcode
  * 
  * @param slave Dirección del esclavo I2C. Rango: [0, 127].
  * @param size Tamaño de datos a leer. Rango[1, 32].
  */
-    void requestFrom(int slave, int size);
+void requestFrom(I2C *i2c_obj, int slave, int size);
 
 /**
  * @brief Este método solicita al bloque IP un dato leído.
@@ -213,24 +210,24 @@ public:
  * #define DATA1            0x30
  * #define DATA2            0x00
  * 
- * I2C Wire(ADDRESS);
- * I2C.begin();
+ * I2C Wire;
+ * setAddress(&Wire, ADDRESS);
+ * begin(&Wire);
  * ...
- * Wire.beginTransmission(SLAVE_ADDRESS);
- * Wire.write(DATA1);
- * Wire.write(DATA2);
- * Wire.endTransmission();
+ * beginTransmission(&Wire, SLAVE_ADDRESS);
+ * write(&Wire, DATA1);
+ * write(&Wire, DATA2);
+ * endTransmission(&Wire);
  * ...
- * Wire.requestFrom(SLAVE_ADDRESS, 2);
+ * requestFrom(&Wire, SLAVE_ADDRESS, 2);
  * int data[2];
- * data[0] = Wire.read();
- * data[1] = Wire.read();
+ * data[0] = read(&Wire);
+ * data[1] = read(&Wire);
  * 
  * @endcode
  * 
  * @return int Dato de 8 bits leído por I2C.
  */
-    int read();
+int read(I2C *i2c_obj);
 
-};
 
