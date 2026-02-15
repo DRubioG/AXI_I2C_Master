@@ -1,7 +1,7 @@
 
 --! Registros
 --! ==
---! | Nombre  | Offset | R/W | Descripción |
+--! | Nombre  | Offset | R/W | Descripciï¿½n |
 --! |---------|--------|-----|-------------|
 --! | CNTRL   |   0x0  |  W  | Registro de control del bloque IP |
 --! | WRITE   |   0x4  |  W  | Registro para escribir por I2C |
@@ -9,7 +9,7 @@
 --!
 --! CNTRL
 --! --
---! - **EN**: Bit de habilitación del bloque IP.
+--! - **EN**: Bit de habilitaciï¿½n del bloque IP.
 --! - **ST**: Bit de start de la interfaz I2C.
 --! - **SP**: Bit de parada de la interfaz I2C.
 --! - **RD**: Bit de lectura de la interfaz I2C.
@@ -29,7 +29,7 @@
 --! ]}
 --! WRITE
 --! --
---! - **Address**: Dirección de escritura del I2C.
+--! - **Address**: Direcciï¿½n de escritura del I2C.
 --! - **Data**: Dato a escribir por I2C.
 --! {
 --!       "config": { 
@@ -42,7 +42,7 @@
 --! ]}
 --! READ
 --! --
---! - **Data**: Dato leído por I2C.
+--! - **Data**: Dato leï¿½do por I2C.
 --! {
 --!       "config": { 
 --!         "hspace": 1000
@@ -77,6 +77,7 @@ entity AXI_I2C_Master is
 
 
 		-- Ports of Axi Slave Bus Interface S_AXI
+		--! @virtualbus AXI @dir in
 		s_axi_aclk	: in std_logic;
 		s_axi_aresetn	: in std_logic;
 		s_axi_awaddr	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -98,6 +99,7 @@ entity AXI_I2C_Master is
 		s_axi_rresp	: out std_logic_vector(1 downto 0);
 		s_axi_rvalid	: out std_logic;
 		s_axi_rready	: in std_logic
+		--! @end
 	);
 end AXI_I2C_Master;
 

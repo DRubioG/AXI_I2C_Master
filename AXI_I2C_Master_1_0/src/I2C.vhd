@@ -16,6 +16,9 @@ entity I2C is
     RD_DATA_O : out std_logic_vector(7 downto 0);
     READ_I    : in std_logic;
     START_I   : in std_logic;
+
+    SIZE_I : in std_logic_vector(7 downto 0);
+    STOP_I : in std_logic;
     -- I2C
     SDA : in std_logic;
     SCL : out std_logic

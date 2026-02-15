@@ -1,7 +1,7 @@
 
 --! Registros
 --! ==
---! | Nombre  | Offset | R/W | Descripción |
+--! | Nombre  | Offset | R/W | Descripcion |
 --! |---------|--------|-----|-------------|
 --! | CNTRL   |   0x0  |  W  | Registro de control del bloque IP |
 --! | WRITE   |   0x4  |  W  | Registro para escribir por I2C |
@@ -9,7 +9,7 @@
 --!
 --! CNTRL
 --! --
---! - **EN**: Bit de habilitación del bloque IP.
+--! - **EN**: Bit de habilitacion del bloque IP.
 --! - **ST**: Bit de start de la interfaz I2C.
 --! - **SP**: Bit de parada de la interfaz I2C.
 --! - **RD**: Bit de lectura de la interfaz I2C.
@@ -29,7 +29,7 @@
 --! ]}
 --! WRITE
 --! --
---! - **Address**: Dirección de escritura del I2C.
+--! - **Address**: Direccion de escritura del I2C.
 --! - **Data**: Dato a escribir por I2C.
 --! {
 --!       "config": { 
@@ -42,7 +42,7 @@
 --! ]}
 --! READ
 --! --
---! - **Data**: Dato leído por I2C.
+--! - **Data**: Dato leodo por I2C.
 --! {
 --!       "config": { 
 --!         "hspace": 1000
@@ -76,6 +76,7 @@ entity AXI_I2C_Master_slave_lite_v1_0_S_AXI is
     -- Do not modify the ports beyond this line
 
     -- Global Clock Signal
+		--! @virtualbus AXI @dir in
     S_AXI_ACLK : in std_logic;
     -- Global Reset Signal. This Signal is Active LOW
     S_AXI_ARESETN : in std_logic;
@@ -135,6 +136,7 @@ entity AXI_I2C_Master_slave_lite_v1_0_S_AXI is
     -- Read ready. This signal indicates that the master can
     -- accept the read data and response information.
     S_AXI_RREADY : in std_logic
+	--! @end
   );
 end AXI_I2C_Master_slave_lite_v1_0_S_AXI;
 
@@ -365,13 +367,23 @@ begin
     (others => '0');
 
   -- Add user logic here
-  I2C_IP_inst : entity work.I2C_IP
-    port map
-    (
-      CLK_I   => S_AXI_ACLK,
-      RST_N_I => S_AXI_ARESETN,
-      EN_I    => slv_reg0(0)
-    );
+I2C_IP_inst : entity work.I2C_IP
+  port map (
+    CLK_I => S_AXI_ACLK,
+    RST_N_I => S_AXI_ARESETN,
+    EN_I => slv_reg0(0),
+    ADDRESS_I => slv_reg1(6 downto 0),
+    WRITE_DATA_I => slv_reg1(14 downto 7),
+    READ_DATA_O => slv_reg2(7 downto 0),
+    READ_I => slv_reg0(3),
+    START_I => slv_reg0(1),
+	FIFO_UPDATE_I => slv_reg0(4),
+	STOP_I => slv_reg0(2),
+	SIZE_I => slv_reg0(12 downto 5),
+    SDA => SDA,
+    SCL => SCL
+  );
+
   -- User logic ends
 
 end arch_imp;
