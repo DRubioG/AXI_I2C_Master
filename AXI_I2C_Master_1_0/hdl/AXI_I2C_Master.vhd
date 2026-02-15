@@ -16,7 +16,8 @@ entity AXI_I2C_Master is
 	);
 	port (
 		-- Users to add ports here
-
+		SDA : inout std_logic;
+		SCL : out std_logic;
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -48,46 +49,17 @@ end AXI_I2C_Master;
 
 architecture arch_imp of AXI_I2C_Master is
 
-	-- component declaration
-	component AXI_I2C_Master_slave_lite_v1_0_S_AXI is
-		generic (
-		C_S_AXI_DATA_WIDTH	: integer	:= 32;
-		C_S_AXI_ADDR_WIDTH	: integer	:= 4
-		);
-		port (
-		S_AXI_ACLK	: in std_logic;
-		S_AXI_ARESETN	: in std_logic;
-		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
-		S_AXI_AWPROT	: in std_logic_vector(2 downto 0);
-		S_AXI_AWVALID	: in std_logic;
-		S_AXI_AWREADY	: out std_logic;
-		S_AXI_WDATA	: in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-		S_AXI_WSTRB	: in std_logic_vector((C_S_AXI_DATA_WIDTH/8)-1 downto 0);
-		S_AXI_WVALID	: in std_logic;
-		S_AXI_WREADY	: out std_logic;
-		S_AXI_BRESP	: out std_logic_vector(1 downto 0);
-		S_AXI_BVALID	: out std_logic;
-		S_AXI_BREADY	: in std_logic;
-		S_AXI_ARADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
-		S_AXI_ARPROT	: in std_logic_vector(2 downto 0);
-		S_AXI_ARVALID	: in std_logic;
-		S_AXI_ARREADY	: out std_logic;
-		S_AXI_RDATA	: out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-		S_AXI_RRESP	: out std_logic_vector(1 downto 0);
-		S_AXI_RVALID	: out std_logic;
-		S_AXI_RREADY	: in std_logic
-		);
-	end component AXI_I2C_Master_slave_lite_v1_0_S_AXI;
-
 begin
 
 -- Instantiation of Axi Bus Interface S_AXI
-AXI_I2C_Master_slave_lite_v1_0_S_AXI_inst : AXI_I2C_Master_slave_lite_v1_0_S_AXI
+AXI_I2C_Master_slave_lite_v1_0_S_AXI_inst : entity work.AXI_I2C_Master_slave_lite_v1_0_S_AXI
 	generic map (
 		C_S_AXI_DATA_WIDTH	=> C_S_AXI_DATA_WIDTH,
 		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH
 	)
 	port map (
+		SDA => SDA,
+		SCL => SCL,
 		S_AXI_ACLK	=> s_axi_aclk,
 		S_AXI_ARESETN	=> s_axi_aresetn,
 		S_AXI_AWADDR	=> s_axi_awaddr,
