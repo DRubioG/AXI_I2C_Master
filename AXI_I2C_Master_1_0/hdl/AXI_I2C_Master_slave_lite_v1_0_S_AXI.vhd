@@ -1,3 +1,57 @@
+
+--! Registros
+--! ==
+--! | Nombre  | Offset | R/W | Descripción |
+--! |---------|--------|-----|-------------|
+--! | CNTRL   |   0x0  |  W  | Registro de control del bloque IP |
+--! | WRITE   |   0x4  |  W  | Registro para escribir por I2C |
+--! | READ    |   0x8  |  R  | Registro para leer por I2C |
+--!
+--! CNTRL
+--! --
+--! - **EN**: Bit de habilitación del bloque IP.
+--! - **ST**: Bit de start de la interfaz I2C.
+--! - **SP**: Bit de parada de la interfaz I2C.
+--! - **RD**: Bit de lectura de la interfaz I2C.
+--! - **FF**: Bit de lectura del FIFO
+--! {
+--!       "config": { 
+--!         "hspace": 1000
+--!       },
+--!     reg:[
+--!     { "name": "EN",   		"bits": 1, "attr": "w", "type": 4},
+--!     { "name": "ST",   		"bits": 1, "attr": "w", "type": 5 },
+--!     { "name": "SP",   		"bits": 1, "attr": "w", "type": 6 },
+--!     { "name": "RD",   		"bits": 1, "attr": "w", "type": 7 },
+--!     { "name": "FF",   		"bits": 1, "attr": "w", "type": 2 },
+--!     { "name": "Size",   	"bits": 8, "attr": "w", "type": 3 },
+--!     { "name": "Reserved",   "bits": 19, "attr": "", "type":"not used" }
+--! ]}
+--! WRITE
+--! --
+--! - **Address**: Dirección de escritura del I2C.
+--! - **Data**: Dato a escribir por I2C.
+--! {
+--!       "config": { 
+--!         "hspace": 1000
+--!       },
+--!     reg:[
+--!     { "name": "Address",   	"bits": 7, "attr": "w", "type":2 },
+--!     { "name": "Data",   	"bits": 8, "attr": "w", "type":3 },
+--!     { "name": "Reserved",   "bits": 17, "attr": "", "type":"not used" }
+--! ]}
+--! READ
+--! --
+--! - **Data**: Dato leído por I2C.
+--! {
+--!       "config": { 
+--!         "hspace": 1000
+--!       },
+--!     reg:[
+--!     { "name": "Data",   	"bits": 8, "attr": "r" , "type": 4},
+--!     { "name": "Reserved",   "bits": 24, "attr": "", "type":"not used" }
+--! ]}
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
