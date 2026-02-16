@@ -14,6 +14,7 @@ entity I2C_IP is
         FIFO_UPDATE_I : in std_logic;
         STOP_I : in std_logic;
         SIZE_I : in std_logic_vector(7 downto 0);
+		    IRQ : out std_logic;
         SDA : inout std_logic;
         SCL : out std_logic
     );

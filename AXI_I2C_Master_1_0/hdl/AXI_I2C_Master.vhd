@@ -14,6 +14,7 @@
 --! - **SP**: Bit de parada de la interfaz I2C.
 --! - **RD**: Bit de lectura de la interfaz I2C.
 --! - **FF**: Bit de lectura del FIFO
+--! - **Size**: Tamaño del número de datos a leer por I2C.
 --! {
 --!       "config": { 
 --!         "hspace": 1000
@@ -43,13 +44,19 @@
 --! READ
 --! --
 --! - **Data**: Dato le�do por I2C.
+--! - **ERR**: Error en la lectura del I2C.
+--! - **IRQ**: Finalización de la operación de lectura por I2C.
+--! - **WD**: Watchdog del I2C.
 --! {
 --!       "config": { 
 --!         "hspace": 1000
 --!       },
 --!     reg:[
 --!     { "name": "Data",   	"bits": 8, "attr": "r" , "type": 4},
---!     { "name": "Reserved",   "bits": 24, "attr": "", "type":"not used" }
+--!     { "name": "ERR",   		"bits": 1, "attr": "r", "type": 2 },
+--!     { "name": "IRQ",   		"bits": 1, "attr": "r", "type": 6 },
+--!     { "name": "WD",   		"bits": 1, "attr": "r", "type": 4 },
+--!     { "name": "Reserved",   "bits": 21, "attr": "", "type":"not used" }
 --! ]}
 
 library ieee;
@@ -72,6 +79,7 @@ entity AXI_I2C_Master is
 		-- Users to add ports here
 		SDA : inout std_logic;
 		SCL : out std_logic;
+		IRQ : out std_logic;
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -116,6 +124,7 @@ AXI_I2C_Master_slave_lite_v1_0_S_AXI_inst : entity work.AXI_I2C_Master_slave_lit
 	port map (
 		SDA => SDA,
 		SCL => SCL,
+		IRQ => IRQ,
 		S_AXI_ACLK	=> s_axi_aclk,
 		S_AXI_ARESETN	=> s_axi_aresetn,
 		S_AXI_AWADDR	=> s_axi_awaddr,

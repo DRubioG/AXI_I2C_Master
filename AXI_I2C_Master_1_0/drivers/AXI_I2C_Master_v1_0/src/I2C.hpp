@@ -107,8 +107,10 @@ public:
  * @endcode
  * 
  * @param slave Dirección I2C del esclavo. Rango: [0, 127].
+ * @return Error en la comunicación. Si el valor devuelto es 1, se ha producido
+ * un error en la comunicación. Si es 0, la comunicación ha sido correcta.
  */
-    void beginTransmission(int slave);
+    int beginTransmission(int slave);
 
 
 /**
@@ -137,8 +139,10 @@ public:
  * 
  * 
  * @param data Dato de 8 bits a transmitir al esclavo.
+ * @return Error en la comunicación. Si el valor devuelto es 1, se ha producido
+ * un error en la comunicación. Si es 0, la comunicación ha sido correcta.
  */
-    void write(int data);
+    int write(int data);
 
 /**
  * @brief Este método finaliza el ciclo de transmisión de datos al esclavo.
@@ -194,8 +198,10 @@ public:
  * 
  * @param slave Dirección del esclavo I2C. Rango: [0, 127].
  * @param size Tamaño de datos a leer. Rango[1, 32].
+ * @return Error en la comunicación. Si el valor devuelto es 1, se ha producido
+ * un error en la comunicación. Si es 0, la comunicación ha sido correcta.
  */
-    void requestFrom(int slave, int size);
+    int requestFrom(int slave, int size);
 
 /**
  * @brief Este método solicita al bloque IP un dato leído.

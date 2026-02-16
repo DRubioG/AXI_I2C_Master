@@ -1,7 +1,7 @@
 
 --! Registros
 --! ==
---! | Nombre  | Offset | R/W | Descripcion |
+--! | Nombre  | Offset | R/W | Descripci�n |
 --! |---------|--------|-----|-------------|
 --! | CNTRL   |   0x0  |  W  | Registro de control del bloque IP |
 --! | WRITE   |   0x4  |  W  | Registro para escribir por I2C |
@@ -9,11 +9,12 @@
 --!
 --! CNTRL
 --! --
---! - **EN**: Bit de habilitacion del bloque IP.
+--! - **EN**: Bit de habilitaci�n del bloque IP.
 --! - **ST**: Bit de start de la interfaz I2C.
 --! - **SP**: Bit de parada de la interfaz I2C.
 --! - **RD**: Bit de lectura de la interfaz I2C.
 --! - **FF**: Bit de lectura del FIFO
+--! - **Size**: Tamaño del número de datos a leer por I2C.
 --! {
 --!       "config": { 
 --!         "hspace": 1000
@@ -29,7 +30,7 @@
 --! ]}
 --! WRITE
 --! --
---! - **Address**: Direccion de escritura del I2C.
+--! - **Address**: Direcci�n de escritura del I2C.
 --! - **Data**: Dato a escribir por I2C.
 --! {
 --!       "config": { 
@@ -42,14 +43,20 @@
 --! ]}
 --! READ
 --! --
---! - **Data**: Dato leodo por I2C.
+--! - **Data**: Dato le�do por I2C.
+--! - **ERR**: Error en la lectura del I2C.
+--! - **IRQ**: Finalización de la operación de lectura por I2C.
+--! - **WD**: Watchdog del I2C.
 --! {
 --!       "config": { 
 --!         "hspace": 1000
 --!       },
 --!     reg:[
 --!     { "name": "Data",   	"bits": 8, "attr": "r" , "type": 4},
---!     { "name": "Reserved",   "bits": 24, "attr": "", "type":"not used" }
+--!     { "name": "ERR",   		"bits": 1, "attr": "r", "type": 2 },
+--!     { "name": "IRQ",   		"bits": 1, "attr": "r", "type": 6 },
+--!     { "name": "WD",   		"bits": 1, "attr": "r", "type": 4 },
+--!     { "name": "Reserved",   "bits": 21, "attr": "", "type":"not used" }
 --! ]}
 
 library ieee;
@@ -72,6 +79,7 @@ entity AXI_I2C_Master_slave_lite_v1_0_S_AXI is
     -- Users to add ports here
     SDA : inout std_logic;
     SCL : out std_logic;
+		IRQ : out std_logic;
     -- User ports ends
     -- Do not modify the ports beyond this line
 
@@ -377,9 +385,10 @@ I2C_IP_inst : entity work.I2C_IP
     READ_DATA_O => slv_reg2(7 downto 0),
     READ_I => slv_reg0(3),
     START_I => slv_reg0(1),
-	FIFO_UPDATE_I => slv_reg0(4),
-	STOP_I => slv_reg0(2),
-	SIZE_I => slv_reg0(12 downto 5),
+    FIFO_UPDATE_I => slv_reg0(4),
+    STOP_I => slv_reg0(2),
+    SIZE_I => slv_reg0(12 downto 5),
+		IRQ => IRQ,
     SDA => SDA,
     SCL => SCL
   );

@@ -28,13 +28,15 @@ void I2C::begin(){
 }
 
 // Este método inicia el sistema de transmisión de datos al esclavo por parte del maestro.
-void I2C::beginTransmission(int slave){
+int I2C::beginTransmission(int slave){
     // Selecciona el esclavo en el que se va a escribir.
     Xil_Out32(_address+WRITE_REG, slave);
+
+    return 0;
 }
 
 // Este método transmite al esclavo el dato de 8 bits deseado.
-void I2C::write(int data){
+int I2C::write(int data){
 
     uint32_t reg = Xil_In32(_address+WRITE_REG);
     // Escribe el valor en el registro de escritura.
@@ -45,6 +47,7 @@ void I2C::write(int data){
     Xil_Out32(_address+CNTRL_REG, reg | ( 1<< ST_POS));
     // Borra la señal de envío al bloque IP.
     Xil_Out32(_address+CNTRL_REG, reg & ~( 1<< ST_POS));
+    return 0;
 }
 
 // Este método finaliza el ciclo de transmisión de datos al esclavo.
@@ -58,7 +61,7 @@ void I2C::endTransmission(){
 }
 
 //Este método solicita al bloque IP de leer los datos consecutivos por I2C al esclavo deseado.
-void I2C::requestFrom(int slave, int size){
+int I2C::requestFrom(int slave, int size){
 
     // Comprueba que el tamaño no exceda el límite del FIFO.
     if((size > 32) && (size < 0))
@@ -76,6 +79,7 @@ void I2C::requestFrom(int slave, int size){
     // Borra la orden de lectura
     Xil_Out32(_address+CNTRL_REG, reg & ~( 1<< READ_POS));
 
+    return 0;
 
 }
 
