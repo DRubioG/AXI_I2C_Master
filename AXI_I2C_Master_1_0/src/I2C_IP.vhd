@@ -2,6 +2,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 
 entity I2C_IP is
+    generic (
+        G_FPGA_CLK : integer := 100_000_000;
+        G_I2C_CLK : integer := 400_000
+    );
     port(
         CLK_I : in std_logic;
         RST_N_I : in std_logic;
@@ -29,23 +33,31 @@ I2C_IP_controller_inst : entity work.I2C_IP_controller
   port map (
     CLK_I => CLK_I,
     RST_N_I => RST_N_I,
-    EN_I => EN_I
+    EN_I => EN_I,
+    FIFO_UPDATE_I => FIFO_UPDATE_I,
+    IRQ_O => IRQ
   );
 
 
 
 
-
 I2C_inst : entity work.I2C
+  generic map (
+    G_FPGA_CLK => G_FPGA_CLK,
+    G_I2C_CLK => G_I2C_CLK
+  )
   port map (
     CLK_I => CLK_I,
     RST_N_I => RST_N_I,
     EN_I => EN_I,
-    ADDR_I => ADDRESS_I,
-    WR_DATA_I => WRITE_DATA_I,
-    RD_DATA_O => READ_DATA_O,
-    READ_I => READ_I,
+    ADDRESS_I => ADDRESS_I,
+    WRITE_DATA_I => WRITE_DATA_I,
+    READ_DATA_O => READ_DATA_O,
+    WRITE_I => ,
+    READ_EN_I => READ_I,
     START_I => START_I,
+    SIZE_I => SIZE_I,
+    STOP_I => STOP_I,
     SDA => SDA,
     SCL => SCL
   );

@@ -20,6 +20,7 @@ entity I2C_phy is
         RST_N_I : in std_logic;
 --! Habilitación del modulo. Activo a nivel alto.
         EN_I : in std_logic;
+
 -- Control
 --! Direccion de escritura del modulo.
         ADDRESS_I : in std_logic_vector(6 downto 0);
@@ -63,6 +64,8 @@ type fsm is (
     SM_IDLE,
 --! Estado de comienzo de escritura de datos.
     SM_START,
+
+    SM_FALLING_SCL,
 --! Estado de escritura de la dirección del esclavo.
     SM_ADDRESS,
 --! Estado del bit de escritura/lectura.
@@ -152,13 +155,19 @@ begin
 
                 when SM_START =>
                     re_state <= SM_START;
-                    if r_cont_start >= C_START then
+                    if r_cont_start >= C_START-1 then
+                        re_state <= SM_FALLING_SCL;
+                    end if;
+
+                when SM_FALLING_SCL =>
+                    re_state <= SM_FALLING_SCL;
+                    if s_falling_edge = '1' then
                         re_state <= SM_ADDRESS;
                     end if;
 
                 when SM_ADDRESS =>
                     re_state <= SM_ADDRESS;
-                    if r_cont_address >= 8 then
+                    if r_cont_address >= 7 then
                         re_state <= SM_RW;
                     end if;
 
@@ -225,10 +234,10 @@ end process;
 
 
 --! Detector de flancos de subida de la señal SCL.
-RISING_EDGE_DETECTOR : s_rising_edge <= s_scl_d and not s_scl;
+RISING_EDGE_DETECTOR : s_rising_edge <= not s_scl_d and s_scl;
 
 --! Detector de flancos de bajada de la señal SCL.
-FALLING_EDGE_DETECTOR : s_falling_edge <= not s_scl_d and s_scl;
+FALLING_EDGE_DETECTOR : s_falling_edge <= s_scl_d and not s_scl;
 
 
 --! Biestable D para la detección de flancos del reloj SCL.
@@ -250,11 +259,14 @@ begin
         if RST_N_I = '0' then
             s_scl <= '1';
         elsif EN_I = '1' then
-            s_scl <= '1';
-            if re_state = SM_ADDRESS then
+            if re_state = SM_FALLING_SCL then
+                s_scl <= '0';
+            elsif re_state = SM_ADDRESS or re_state = SM_RW or re_state = SM_ACK_SLAVE or re_state = SM_WRITE_DATA or re_state = SM_READ_DATA then
                 if r_cont_i2c >= C_I2C_SEM_PERIOD-1 then
                     s_scl <= not s_scl;
                 end if;
+            else
+                s_scl <= '1';
             end if;
         end if;
     end if;
@@ -268,7 +280,7 @@ begin
             r_cont_i2c <= 0;
         elsif EN_I = '1' then
             r_cont_i2c <= 0;
-            if re_state = SM_ADDRESS then
+            if re_state = SM_ADDRESS or re_state = SM_RW or re_state = SM_ACK_MASTER or re_state = SM_ACK_SLAVE or re_state = SM_WRITE_DATA or re_state = SM_READ_DATA  then
                 r_cont_i2c <= r_cont_i2c+1;
                 if r_cont_i2c >= C_I2C_SEM_PERIOD-1 then
                     r_cont_i2c <= 0;
@@ -324,7 +336,7 @@ begin
             if re_state = SM_START then
                 r_address <= ADDRESS_I;
             elsif re_state = SM_ADDRESS then
-                if s_rising_edge = '1' then
+                if s_falling_edge = '1' then
                     r_address <= r_address(C_ADDRESS-2 downto 0) & r_address(0);
                 end if;
             end if;
@@ -338,7 +350,7 @@ end process;
 WRITE_DATA : process (CLK_I)
 begin
     if rising_edge(CLK_I) then
-        if RST_N_I = '1' then
+        if RST_N_I = '0' then
             r_write_data <= (others => '0');
         elsif EN_I = '1' then
             if re_state = SM_WAIT_ORDER then
@@ -427,6 +439,44 @@ begin
                 end if;
             else
                 r_cont_address <= 0;
+            end if;
+        end if;
+    end if;
+end process;
+
+
+
+process (CLK_I)
+begin
+    if rising_edge(CLK_I) then
+        if RST_N_I = '0' then
+            r_cont_write_data <= 0;
+        elsif EN_I = '1' then
+            if re_state = SM_WRITE_DATA then
+                if s_falling_edge = '1' then
+                    r_cont_write_data <= r_cont_write_data+1;
+                end if;
+            else
+                r_cont_write_data <= 0;
+            end if;
+        end if;
+    end if;
+end process;
+
+
+
+process (CLK_I)
+begin
+    if rising_edge(CLK_I) then
+        if RST_N_I = '0' then
+            r_cont_read_data <= 0;
+        elsif EN_I = '1' then
+            if re_state = SM_READ_DATA then
+                if s_falling_edge = '1' then
+                    r_cont_read_data <= r_cont_read_data+1;
+                end if;
+            else
+                r_cont_read_data <= 0;
             end if;
         end if;
     end if;

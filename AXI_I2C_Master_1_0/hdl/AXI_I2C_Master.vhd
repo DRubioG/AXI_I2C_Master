@@ -67,6 +67,8 @@ entity AXI_I2C_Master is
 	generic (
 		-- Users to add parameters here
 
+        G_FPGA_CLK : integer := 100_000_000;
+        G_I2C_CLK : integer := 400_000;
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 
@@ -119,7 +121,9 @@ begin
 AXI_I2C_Master_slave_lite_v1_0_S_AXI_inst : entity work.AXI_I2C_Master_slave_lite_v1_0_S_AXI
 	generic map (
 		C_S_AXI_DATA_WIDTH	=> C_S_AXI_DATA_WIDTH,
-		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH
+		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH,
+        G_FPGA_CLK => G_FPGA_CLK,
+        G_I2C_CLK => G_I2C_CLK
 	)
 	port map (
 		SDA => SDA,

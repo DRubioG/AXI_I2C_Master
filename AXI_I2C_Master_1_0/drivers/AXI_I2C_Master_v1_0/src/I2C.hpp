@@ -73,7 +73,7 @@ public:
  * #define ADDRESS          0x40000000
  * 
  * I2C Wire(ADDRESS);
- * I2C.begin();
+ * Wire.begin();
  * 
  * @endcode
  * 
@@ -97,7 +97,7 @@ public:
  * #define DATA2            0x00
  * 
  * I2C Wire(ADDRESS);
- * I2C.begin();
+ * Wire.begin();
  * ...
  * Wire.beginTransmission(SLAVE_ADDRESS);
  * Wire.write(DATA1);
@@ -128,7 +128,7 @@ public:
  * #define DATA2            0x00
  * 
  * I2C Wire(ADDRESS);
- * I2C.begin();
+ * Wire.begin();
  * ...
  * Wire.beginTransmission(SLAVE_ADDRESS);
  * Wire.write(DATA1);
@@ -157,7 +157,7 @@ public:
  * #define DATA2            0x00
  * 
  * I2C Wire(ADDRESS);
- * I2C.begin();
+ * Wire.begin();
  * ...
  * Wire.beginTransmission(SLAVE_ADDRESS);
  * Wire.write(DATA1);
@@ -185,7 +185,7 @@ public:
  * #define DATA2            0x00
  * 
  * I2C Wire(ADDRESS);
- * I2C.begin();
+ * Wire.begin();
  * ...
  * Wire.beginTransmission(SLAVE_ADDRESS);
  * Wire.write(DATA1);
@@ -220,7 +220,7 @@ public:
  * #define DATA2            0x00
  * 
  * I2C Wire(ADDRESS);
- * I2C.begin();
+ * Wire.begin();
  * ...
  * Wire.beginTransmission(SLAVE_ADDRESS);
  * Wire.write(DATA1);
