@@ -62,10 +62,8 @@ EN_I <= '1';
 
 ADDRESS_I <= "0000001";
 
-READ_I <= '0';
-STOP_I <= '0';
 SDA_I <= '0';
-SIZE_I <= (0=>'1', others => '0');
+SIZE_I <= (3=>'1', others => '0');
 
 WRITE_DATA_I <= x"A5";
 
@@ -77,8 +75,25 @@ process begin
   START_I <= '1';
   wait until rising_edge(CLK_I);
   START_I <= '0';
+  wait for 160us;
+  wait until rising_edge(CLK_I);
+  START_I <= '1';
+  wait until rising_edge(CLK_I);
+  START_I <= '0';
   wait;
 end process;
+
+
+process begin
+  READ_I <= '0';
+  wait for 200us;
+  wait until rising_edge(CLK_I);
+  READ_I <= '1';
+  wait until rising_edge(CLK_I);
+  READ_I <= '0';
+  wait;
+end process;
+
 
 
 process begin
@@ -88,7 +103,28 @@ process begin
   WRITE_I <= '1';
   wait until rising_edge(CLK_I);
   WRITE_I <= '0';
+  wait for 40us;
+  wait until rising_edge(CLK_I);
+  WRITE_I <= '1';
+  wait until rising_edge(CLK_I);
+  WRITE_I <= '0';
+  wait for 40us;
+  wait until rising_edge(CLK_I);
+  WRITE_I <= '1';
+  wait until rising_edge(CLK_I);
+  WRITE_I <= '0';
   wait;
+end process;
+
+
+
+process begin
+  STOP_I <= '0';
+  wait for 150us;
+  wait until rising_edge(CLK_I);
+  STOP_I <= '1';
+  wait until rising_edge(CLK_I);
+  STOP_I <= '0';
 end process;
 
 end;

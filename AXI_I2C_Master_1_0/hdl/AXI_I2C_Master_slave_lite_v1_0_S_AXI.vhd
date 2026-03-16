@@ -67,8 +67,8 @@ entity AXI_I2C_Master_slave_lite_v1_0_S_AXI is
   generic (
     -- Users to add parameters here
 
-        G_FPGA_CLK : integer := 100_000_000;
-        G_I2C_CLK : integer := 400_000;
+    G_FPGA_CLK : integer := 100_000_000;
+    G_I2C_CLK  : integer := 400_000;
     -- User parameters ends
     -- Do not modify the parameters beyond this line
 
@@ -81,12 +81,11 @@ entity AXI_I2C_Master_slave_lite_v1_0_S_AXI is
     -- Users to add ports here
     SDA : inout std_logic;
     SCL : out std_logic;
-		IRQ : out std_logic;
     -- User ports ends
     -- Do not modify the ports beyond this line
 
     -- Global Clock Signal
-		--! @virtualbus AXI @dir in
+    --! @virtualbus AXI @dir in
     S_AXI_ACLK : in std_logic;
     -- Global Reset Signal. This Signal is Active LOW
     S_AXI_ARESETN : in std_logic;
@@ -146,7 +145,7 @@ entity AXI_I2C_Master_slave_lite_v1_0_S_AXI is
     -- Read ready. This signal indicates that the master can
     -- accept the read data and response information.
     S_AXI_RREADY : in std_logic
-	--! @end
+    --! @end
   );
 end AXI_I2C_Master_slave_lite_v1_0_S_AXI;
 
@@ -304,7 +303,7 @@ begin
                 if (S_AXI_WSTRB(byte_index) = '1') then
                   -- Respective byte enables are asserted as per write strobes                   
                   -- slave registor 2
-                --   slv_reg2(byte_index * 8 + 7 downto byte_index * 8) <= S_AXI_WDATA(byte_index * 8 + 7 downto byte_index * 8);
+                  --   slv_reg2(byte_index * 8 + 7 downto byte_index * 8) <= S_AXI_WDATA(byte_index * 8 + 7 downto byte_index * 8);
                 end if;
               end loop;
             when b"11" =>
@@ -318,7 +317,7 @@ begin
             when others =>
               slv_reg0 <= slv_reg0;
               slv_reg1 <= slv_reg1;
-            --   slv_reg2 <= slv_reg2;
+              --   slv_reg2 <= slv_reg2;
               slv_reg3 <= slv_reg3;
           end case;
         end if;
@@ -377,28 +376,31 @@ begin
     (others => '0');
 
   -- Add user logic here
-I2C_IP_inst : entity work.I2C_IP
-generic map(
-        G_FPGA_CLK => G_FPGA_CLK,
-        G_I2C_CLK => G_I2C_CLK
-)
-  port map (
-    CLK_I => S_AXI_ACLK,
-    RST_N_I => S_AXI_ARESETN,
-    EN_I => slv_reg0(0),
-    ADDRESS_I => slv_reg1(6 downto 0),
-    WRITE_DATA_I => slv_reg1(14 downto 7),
-    READ_DATA_O => slv_reg2(7 downto 0),
-    READ_I => slv_reg0(3),
-    START_I => slv_reg0(1),
-    FIFO_UPDATE_I => slv_reg0(4),
-    STOP_I => slv_reg0(2),
-    SIZE_I => slv_reg0(12 downto 5),
-		IRQ => IRQ,
-    SDA => SDA,
-    SCL => SCL
-  );
+  I2C_IP_inst : entity work.I2C_IP
+    generic map(
+      G_FPGA_CLK => G_FPGA_CLK,
+      G_I2C_CLK  => G_I2C_CLK
+    )
+    port map
+    (
+      CLK_I         => S_AXI_ACLK,
+      RST_N_I       => S_AXI_ARESETN,
+      EN_I          => slv_reg0(0),
+      ADDRESS_I     => slv_reg1(6 downto 0),
+      WRITE_DATA_I  => slv_reg1(14 downto 7),
+      READ_DATA_O   => slv_reg2(7 downto 0),
+      READ_I        => slv_reg0(3),
+      START_I       => slv_reg0(1),
+      READ_FIFO_I   => slv_reg0(4),
+      STOP_I        => slv_reg0(2),
+      SIZE_I        => slv_reg0(12 downto 5),
+      ERROR_O       => slv_reg2(8),
+      SDA           => SDA,
+      SCL           => SCL
+    );
 
-  -- User logic ends
+  
+    -- User logic ends
+  
 
 end arch_imp;

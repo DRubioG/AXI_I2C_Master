@@ -81,7 +81,6 @@ entity AXI_I2C_Master is
 		-- Users to add ports here
 		SDA : inout std_logic;
 		SCL : out std_logic;
-		IRQ : out std_logic;
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -128,7 +127,6 @@ AXI_I2C_Master_slave_lite_v1_0_S_AXI_inst : entity work.AXI_I2C_Master_slave_lit
 	port map (
 		SDA => SDA,
 		SCL => SCL,
-		IRQ => IRQ,
 		S_AXI_ACLK	=> s_axi_aclk,
 		S_AXI_ARESETN	=> s_axi_aresetn,
 		S_AXI_AWADDR	=> s_axi_awaddr,
