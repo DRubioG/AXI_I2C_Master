@@ -9,29 +9,40 @@
  */
 #include "Xil_io.h"
 
+// Registros del bloque IP.
 #define BASE_ADRESS     0x00
 #define CNTRL_REG       BASE_ADRESS+0x0
 #define WRITE_REG       BASE_ADRESS+0x4
 #define READ_REG        BASE_ADRESS+0x8
 
+// Posiciones de los bits del registro CNTRL
 #define EN_POS  0
 #define ST_POS  1
 #define SP_POS  2
 #define RD_POS  3
 #define FF_POS 4
 
-
+// Posiciones de los bits del registro WRITE
 #define DATA_POS    8
 #define ADDRESS_POS 0
 
+// Posiciones de los bits del registro READ
 #define SIZE_POS 0
 #define READ_POS 8
 
-
-typedef struct {
-    uint32_t _address;
+// Estructura de trabajo del bloque IP.
+typedef struct{
+// Dirección del bloque IP.
+    uint32_t address = 0;
 }I2C;
 
+// Definición de respuestas posibles del bloque IP.
+typedef enum{
+// Si la ejecución es correcta.
+    PASS,
+// Si ha habido un error en la ejecución.
+    NO_PASS
+}I2C_Response;
 
 void setAddress(I2C *i2c_obj, uint32_t address);
 
@@ -101,8 +112,9 @@ void begin(I2C *i2c_obj);
  * @endcode
  * 
  * @param slave Dirección I2C del esclavo. Rango: [0, 127].
+ * @return Respuesta a si a sido posible empezar la comunicación.
  */
-void beginTransmission(I2C *i2c_obj, int slave);
+I2C_Response beginTransmission(I2C *i2c_obj, int slave);
 
 
 /**
@@ -191,8 +203,9 @@ void endTransmission(I2C *i2c_obj);
  * 
  * @param slave Dirección del esclavo I2C. Rango: [0, 127].
  * @param size Tamaño de datos a leer. Rango[1, 32].
+ * @return Respuesta a si a sido posible leer datos.
  */
-void requestFrom(I2C *i2c_obj, int slave, int size);
+I2C_Response requestFrom(I2C *i2c_obj, int slave, int size);
 
 /**
  * @brief Este método solicita al bloque IP un dato leído.

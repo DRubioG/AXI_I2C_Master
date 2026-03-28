@@ -54,9 +54,7 @@
 --!     reg:[
 --!     { "name": "Data",   	"bits": 8, "attr": "r" , "type": 4},
 --!     { "name": "ERR",   		"bits": 1, "attr": "r", "type": 2 },
---!     { "name": "IRQ",   		"bits": 1, "attr": "r", "type": 6 },
---!     { "name": "WD",   		"bits": 1, "attr": "r", "type": 4 },
---!     { "name": "Reserved",   "bits": 21, "attr": "", "type":"not used" }
+--!     { "name": "Reserved",   "bits": 23, "attr": "", "type":"not used" }
 --! ]}
 
 library ieee;

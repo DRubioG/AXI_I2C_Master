@@ -9,29 +9,41 @@
  */
 #include "Xil_io.h"
 
+// Registros del bloque IP.
 #define BASE_ADRESS     0x00
 #define CNTRL_REG       BASE_ADRESS+0x0
 #define WRITE_REG       BASE_ADRESS+0x4
 #define READ_REG        BASE_ADRESS+0x8
 
+// Posiciones de los bits del registro CNTRL
 #define EN_POS  0
 #define ST_POS  1
 #define SP_POS  2
 #define RD_POS  3
 #define FF_POS 4
 
-
+// Posiciones de los bits del registro WRITE
 #define DATA_POS    8
 #define ADDRESS_POS 0
 
+// Posiciones de los bits del registro READ
 #define SIZE_POS 0
 #define READ_POS 8
+
+// Definición de respuestas posibles del bloque IP.
+typedef enum{
+// Si la ejecución es correcta.
+    PASS,
+// Si ha habido un error en la ejecución.
+    NO_PASS
+}I2C_Response;
 
 class I2C
 {
 private:
-    /* data */
-    uint32_t _address;
+// Dirección del bloque IP.
+    uint32_t _address = 0;
+
 public:
 /**
  * @brief Constructor de la clase I2C.
@@ -110,7 +122,7 @@ public:
  * @return Error en la comunicación. Si el valor devuelto es 1, se ha producido
  * un error en la comunicación. Si es 0, la comunicación ha sido correcta.
  */
-    int beginTransmission(int slave);
+    I2C_Response beginTransmission(int slave);
 
 
 /**
@@ -198,10 +210,10 @@ public:
  * 
  * @param slave Dirección del esclavo I2C. Rango: [0, 127].
  * @param size Tamaño de datos a leer. Rango[1, 32].
- * @return Error en la comunicación. Si el valor devuelto es 1, se ha producido
+ * @return Error en la comunicación. Si el valor devuelto es NO_PASS, se ha producido
  * un error en la comunicación. Si es 0, la comunicación ha sido correcta.
  */
-    int requestFrom(int slave, int size);
+    I2C_Response requestFrom(int slave, int size);
 
 /**
  * @brief Este método solicita al bloque IP un dato leído.

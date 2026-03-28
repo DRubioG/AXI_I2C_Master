@@ -7,8 +7,9 @@ void setAddress(I2C *i2c_obj, uint32_t address){
 
 // Este método finaliza la operación del bloque IP del I2C.
 void end(I2C *i2c_obj){
+    // Lectura de la dirección del bloque IP.
     uint32_t address = i2c_obj->_address;
-
+    // Lectura del valor del registro.
     uint32_t reg = Xil_In32(address+CNTRL_REG);
     // Poner a '0' el valor del registro.
     Xil_Out32(address+CNTRL_REG, reg & ~( 1<< EN_POS));
@@ -16,26 +17,30 @@ void end(I2C *i2c_obj){
 
 // Este método inicializa el bloque IP del I2C.
 void begin(I2C *i2c_obj){
+    // Lectura de la dirección del bloque IP.
     uint32_t address = i2c_obj->_address;
-
+    // Lectura del valor del registro.
     uint32_t reg = Xil_In32(address+CNTRL_REG);
     // Poner a '1' el valor del registro.
     Xil_Out32(address+CNTRL_REG, reg | ( 1<< EN_POS));
 }
 
 // Este método inicia el sistema de transmisión de datos al esclavo por parte del maestro.
-void beginTransmission(I2C *i2c_obj, int slave){
+I2C_Response beginTransmission(I2C *i2c_obj, int slave){
+    // Lectura de la dirección del bloque IP.
     uint32_t address = i2c_obj->_address;
     
     // Selecciona el esclavo en el que se va a escribir.
     Xil_Out32(address+WRITE_REG, slave);
+
+    return PASS;
 }
 
 // Este método transmite al esclavo el dato de 8 bits deseado.
 void write(I2C *i2c_obj, int data){
+    // Lectura de la dirección del bloque IP.
     uint32_t address = i2c_obj->_address;
-    
-
+    // Lectura del valor del registro.
     uint32_t reg = Xil_In32(address+WRITE_REG);
     // Escribe el valor en el registro de escritura.
     Xil_Out32(address+WRITE_REG, reg | (data < DATA_POS));
@@ -49,9 +54,9 @@ void write(I2C *i2c_obj, int data){
 
 // Este método finaliza el ciclo de transmisión de datos al esclavo.
 void endTransmission(I2C *i2c_obj){
+    // Lectura de la dirección del bloque IP.
     uint32_t address = i2c_obj->_address;
-    
-
+    // Lectura del valor del registro.
     uint32_t reg = Xil_In32(address+CNTRL_REG);
     // Emite la orden de finalizar el bloque IP.
     Xil_Out32(address+CNTRL_REG, reg | ( 1<< SP_POS));
@@ -60,15 +65,16 @@ void endTransmission(I2C *i2c_obj){
 }
 
 //Este método solicita al bloque IP de leer los datos consecutivos por I2C al esclavo deseado.
-void requestFrom(I2C *i2c_obj, int slave, int size){
+I2C_Response requestFrom(I2C *i2c_obj, int slave, int size){
+    // Lectura de la dirección del bloque IP.
     uint32_t address = i2c_obj->_address;
     
 
     // Comprueba que el tamaño no exceda el límite del FIFO.
     if((size > 32) && (size < 0))
-        return;
+        return NO_PASS;
 
-    
+    // Lectura del valor del registro.
     uint32_t reg = Xil_In32(address+CNTRL_REG);
     // Esritura del tamaño a leer
     Xil_Out32(address+CNTRL_REG, reg | ( size<< SIZE_POS));
@@ -80,13 +86,15 @@ void requestFrom(I2C *i2c_obj, int slave, int size){
     // Borra la orden de lectura
     Xil_Out32(address+CNTRL_REG, reg & ~( 1<< READ_POS));
 
-
+    return PASS;
 }
 
 // Este método solicita al bloque IP un dato leído.
 int read(I2C *i2c_obj){
+    // Lectura de la dirección del bloque IP.
     uint32_t address = i2c_obj->_address;
     
+    // Lectura del valor del registro.
     uint32_t reg = Xil_In32(address+READ_REG);
 
     // Devuelve el dato leído del FIFO
