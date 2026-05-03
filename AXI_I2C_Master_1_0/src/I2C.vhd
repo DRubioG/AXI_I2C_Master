@@ -42,7 +42,9 @@ entity I2C is
 
     -- I2C
     --! Puerto de datos de I2C.
-    SDA : inout std_logic;
+    SDA_T  : out std_logic;
+    SDA_I  : in std_logic;
+    SDA_O  : out std_logic;
     --! Puerto de reloj de I2C.
     SCL : out std_logic
   );
@@ -50,12 +52,6 @@ end entity;
 
 architecture rtl of I2C is
 
-  --! Señal de conexión de SDA de entrada con el buffer tri-estado.
-  signal s_sda_i : std_logic;
-  --! Señal de conexión de SDA de salida con el buffer tri-estado.
-  signal s_sda_o : std_logic;
-  --! Señal de conexión de SDA directiva con el buffer tri-estado.
-  signal s_sda_t : std_logic;
   --! Señal que conecta el dato leído por I2C con el controlador.
   signal s_read_data : std_logic_vector(7 downto 0);
   --! Señal que conecta que hay un dato nuevo con el controlador. Activa a nivel alto.
@@ -72,16 +68,6 @@ architecture rtl of I2C is
 
 begin
 
-  --! Este módulo instancia el bloque triestado para la señal SDA.
-  --! Con este módulo se consigue pasar de tres señales a una.
-  I2C_tristate_inst : entity work.I2C_tristate
-    port map
-    (
-      SDA_I  => s_sda_o,
-      SDA_O  => s_sda_i,
-      SDA_T  => s_sda_t,
-      SDA_IO => SDA
-    );
   --! Este módulo instancia la interfaz I2C para comunicaciones como master.
   I2C_phy_inst : entity work.I2C_phy
     generic map(
@@ -104,9 +90,9 @@ begin
       STOP_I         => STOP_I,
       ERROR_O        => ERROR_O,
       READY_O        => READY_O,
-      SDA_I          => s_sda_i,
-      SDA_O          => s_sda_o,
-      SDA_T          => s_sda_t,
+      SDA_I          => SDA_I,
+      SDA_O          => SDA_O,
+      SDA_T          => SDA_T,
       SCL_O          => SCL
     );
 

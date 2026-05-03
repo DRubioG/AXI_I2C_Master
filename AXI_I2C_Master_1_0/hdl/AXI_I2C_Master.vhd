@@ -56,101 +56,125 @@
 --!     { "name": "ERR",   		"bits": 1, "attr": "r", "type": 2 },
 --!     { "name": "Reserved",   "bits": 23, "attr": "", "type":"not used" }
 --! ]}
-
-
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity AXI_I2C_Master is
-	generic (
-		-- Users to add parameters here
+  generic (
+    -- Users to add parameters here
 
-        G_FPGA_CLK : integer := 100_000_000;
-        G_I2C_CLK : integer := 400_000;
-		-- User parameters ends
-		-- Do not modify the parameters beyond this line
-
-
-		-- Parameters of Axi Slave Bus Interface S_AXI
-		C_S_AXI_DATA_WIDTH	: integer	:= 32;
-		C_S_AXI_ADDR_WIDTH	: integer	:= 4
-	);
-	port (
-		-- Users to add ports here
-		SDA : inout std_logic;
-		SCL : out std_logic;
-		-- User ports ends
-		-- Do not modify the ports beyond this line
-
-
-		-- Ports of Axi Slave Bus Interface S_AXI
-		--! @virtualbus AXI @dir in
-		s_axi_aclk	: in std_logic;
-		s_axi_aresetn	: in std_logic;
-		s_axi_awaddr	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
-		s_axi_awprot	: in std_logic_vector(2 downto 0);
-		s_axi_awvalid	: in std_logic;
-		s_axi_awready	: out std_logic;
-		s_axi_wdata	: in std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-		s_axi_wstrb	: in std_logic_vector((C_S_AXI_DATA_WIDTH/8)-1 downto 0);
-		s_axi_wvalid	: in std_logic;
-		s_axi_wready	: out std_logic;
-		s_axi_bresp	: out std_logic_vector(1 downto 0);
-		s_axi_bvalid	: out std_logic;
-		s_axi_bready	: in std_logic;
-		s_axi_araddr	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
-		s_axi_arprot	: in std_logic_vector(2 downto 0);
-		s_axi_arvalid	: in std_logic;
-		s_axi_arready	: out std_logic;
-		s_axi_rdata	: out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
-		s_axi_rresp	: out std_logic_vector(1 downto 0);
-		s_axi_rvalid	: out std_logic;
-		s_axi_rready	: in std_logic
-		--! @end
-	);
+    G_FPGA_CLK : integer := 100_000_000;
+    G_I2C_CLK  : integer := 400_000;
+    G_TRISTATE : string  := "YES";
+    -- User parameters ends
+    -- Do not modify the parameters beyond this line
+    -- Parameters of Axi Slave Bus Interface S_AXI
+    C_S_AXI_DATA_WIDTH : integer := 32;
+    C_S_AXI_ADDR_WIDTH : integer := 4
+  );
+  port (
+    -- Users to add ports here
+    SDA_IO : inout std_logic;
+    SDA_T  : out std_logic;
+    SDA_I  : in std_logic;
+    SDA_O  : out std_logic;
+    SCL    : out std_logic;
+    -- User ports ends
+    -- Do not modify the ports beyond this line
+    -- Ports of Axi Slave Bus Interface S_AXI
+    --! @virtualbus AXI @dir in
+    s_axi_aclk    : in std_logic;
+    s_axi_aresetn : in std_logic;
+    s_axi_awaddr  : in std_logic_vector(C_S_AXI_ADDR_WIDTH - 1 downto 0);
+    s_axi_awprot  : in std_logic_vector(2 downto 0);
+    s_axi_awvalid : in std_logic;
+    s_axi_awready : out std_logic;
+    s_axi_wdata   : in std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);
+    s_axi_wstrb   : in std_logic_vector((C_S_AXI_DATA_WIDTH/8) - 1 downto 0);
+    s_axi_wvalid  : in std_logic;
+    s_axi_wready  : out std_logic;
+    s_axi_bresp   : out std_logic_vector(1 downto 0);
+    s_axi_bvalid  : out std_logic;
+    s_axi_bready  : in std_logic;
+    s_axi_araddr  : in std_logic_vector(C_S_AXI_ADDR_WIDTH - 1 downto 0);
+    s_axi_arprot  : in std_logic_vector(2 downto 0);
+    s_axi_arvalid : in std_logic;
+    s_axi_arready : out std_logic;
+    s_axi_rdata   : out std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);
+    s_axi_rresp   : out std_logic_vector(1 downto 0);
+    s_axi_rvalid  : out std_logic;
+    s_axi_rready  : in std_logic
+    --! @end
+  );
 end AXI_I2C_Master;
 
 architecture arch_imp of AXI_I2C_Master is
+	
+  --! Señal de conexión de SDA de entrada con el buffer tri-estado.
+  signal s_sda_i : std_logic;
+  --! Señal de conexión de SDA de salida con el buffer tri-estado.
+  signal s_sda_o : std_logic;
+  --! Señal de conexión de SDA directiva con el buffer tri-estado.
+  signal s_sda_t : std_logic;
 
 begin
 
--- Instantiation of Axi Bus Interface S_AXI
-AXI_I2C_Master_slave_lite_v1_0_S_AXI_inst : entity work.AXI_I2C_Master_slave_lite_v1_0_S_AXI
-	generic map (
-		C_S_AXI_DATA_WIDTH	=> C_S_AXI_DATA_WIDTH,
-		C_S_AXI_ADDR_WIDTH	=> C_S_AXI_ADDR_WIDTH,
-        G_FPGA_CLK => G_FPGA_CLK,
-        G_I2C_CLK => G_I2C_CLK
-	)
-	port map (
-		SDA => SDA,
-		SCL => SCL,
-		S_AXI_ACLK	=> s_axi_aclk,
-		S_AXI_ARESETN	=> s_axi_aresetn,
-		S_AXI_AWADDR	=> s_axi_awaddr,
-		S_AXI_AWPROT	=> s_axi_awprot,
-		S_AXI_AWVALID	=> s_axi_awvalid,
-		S_AXI_AWREADY	=> s_axi_awready,
-		S_AXI_WDATA	=> s_axi_wdata,
-		S_AXI_WSTRB	=> s_axi_wstrb,
-		S_AXI_WVALID	=> s_axi_wvalid,
-		S_AXI_WREADY	=> s_axi_wready,
-		S_AXI_BRESP	=> s_axi_bresp,
-		S_AXI_BVALID	=> s_axi_bvalid,
-		S_AXI_BREADY	=> s_axi_bready,
-		S_AXI_ARADDR	=> s_axi_araddr,
-		S_AXI_ARPROT	=> s_axi_arprot,
-		S_AXI_ARVALID	=> s_axi_arvalid,
-		S_AXI_ARREADY	=> s_axi_arready,
-		S_AXI_RDATA	=> s_axi_rdata,
-		S_AXI_RRESP	=> s_axi_rresp,
-		S_AXI_RVALID	=> s_axi_rvalid,
-		S_AXI_RREADY	=> s_axi_rready
-	);
+  -- Instantiation of Axi Bus Interface S_AXI
+  AXI_I2C_Master_slave_lite_v1_0_S_AXI_inst : entity work.AXI_I2C_Master_slave_lite_v1_0_S_AXI
+    generic map(
+      C_S_AXI_DATA_WIDTH => C_S_AXI_DATA_WIDTH,
+      C_S_AXI_ADDR_WIDTH => C_S_AXI_ADDR_WIDTH,
+      G_FPGA_CLK         => G_FPGA_CLK,
+      G_I2C_CLK          => G_I2C_CLK
+    )
+    port map
+    (
+      SDA_T         => s_sda_t,
+      SDA_I         => s_sda_i,
+      SDA_O         => s_sda_o,
+      SCL           => SCL,
+      S_AXI_ACLK    => s_axi_aclk,
+      S_AXI_ARESETN => s_axi_aresetn,
+      S_AXI_AWADDR  => s_axi_awaddr,
+      S_AXI_AWPROT  => s_axi_awprot,
+      S_AXI_AWVALID => s_axi_awvalid,
+      S_AXI_AWREADY => s_axi_awready,
+      S_AXI_WDATA   => s_axi_wdata,
+      S_AXI_WSTRB   => s_axi_wstrb,
+      S_AXI_WVALID  => s_axi_wvalid,
+      S_AXI_WREADY  => s_axi_wready,
+      S_AXI_BRESP   => s_axi_bresp,
+      S_AXI_BVALID  => s_axi_bvalid,
+      S_AXI_BREADY  => s_axi_bready,
+      S_AXI_ARADDR  => s_axi_araddr,
+      S_AXI_ARPROT  => s_axi_arprot,
+      S_AXI_ARVALID => s_axi_arvalid,
+      S_AXI_ARREADY => s_axi_arready,
+      S_AXI_RDATA   => s_axi_rdata,
+      S_AXI_RRESP   => s_axi_rresp,
+      S_AXI_RVALID  => s_axi_rvalid,
+      S_AXI_RREADY  => s_axi_rready
+    );
 
-	-- Add user logic here
+  -- Add user logic here
 
-	-- User logic ends
+TRISTATE_GEN : if G_TRISTATE = "YES" generate
 
-end arch_imp;
+    I2C_tristate_inst : entity work.I2C_tristate
+      port map
+      (
+        SDA_I  => s_sda_i,
+        SDA_O  => s_sda_o,
+        SDA_T  => s_sda_t,
+        SDA_IO => SDA_IO
+      );
+  else
+    generate
+      s_sda_i <= SDA_I;
+      SDA_O   <= s_sda_o;
+      SDA_T   <= s_sda_t;
+    end generate;
+    -- User logic ends
+
+  end arch_imp;

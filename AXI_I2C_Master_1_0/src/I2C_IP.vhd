@@ -21,8 +21,10 @@ entity I2C_IP is
     SIZE_I       : in std_logic_vector(4 downto 0);
     ERROR_O      : out std_logic;
 
-    SDA : inout std_logic;
-    SCL : out std_logic
+    SDA_T : out std_logic;
+    SDA_I : in std_logic;
+    SDA_O : out std_logic;
+    SCL   : out std_logic
   );
 end entity;
 
@@ -50,7 +52,9 @@ begin
       STOP_I       => STOP_I,
       ERROR_O      => ERROR_O,
       READY_O      => open,
-      SDA          => SDA,
+      SDA_T        => SDA_T,
+      SDA_I        => SDA_I,
+      SDA_O        => SDA_O,
       SCL          => SCL
     );
 

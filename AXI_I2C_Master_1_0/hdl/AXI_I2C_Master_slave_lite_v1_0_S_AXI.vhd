@@ -77,7 +77,9 @@ entity AXI_I2C_Master_slave_lite_v1_0_S_AXI is
   );
   port (
     -- Users to add ports here
-    SDA : inout std_logic;
+    SDA_T  : out std_logic;
+    SDA_I  : in std_logic;
+    SDA_O  : out std_logic;
     SCL : out std_logic;
     -- User ports ends
     -- Do not modify the ports beyond this line
@@ -394,7 +396,9 @@ begin
       STOP_I       => slv_reg0(2),
       SIZE_I       => slv_reg0(9 downto 5),
       ERROR_O      => slv_reg2(8),
-      SDA          => SDA,
+      SDA_T        => SDA_T,
+      SDA_I        => SDA_I,
+      SDA_O        => SDA_O,
       SCL          => SCL
     );
   -- User logic ends
