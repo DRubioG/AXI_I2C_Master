@@ -49,7 +49,7 @@ type fsm is (
 --! Este registro es el estado actual de la máquina de estados.
 signal re_state : fsm;  
 --! Este registro guarda el valor de la entrada hasta que se escribe en el FIFO.
-signal r_write_data : std_logic_vector(WRITE_DATA_FIFO_O'length);
+signal r_write_data : std_logic_vector(WRITE_DATA_FIFO_O'range);
 
 
 begin

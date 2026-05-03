@@ -25,8 +25,8 @@
 --!     { "name": "SP",   		"bits": 1, "attr": "w", "type": 6 },
 --!     { "name": "RD",   		"bits": 1, "attr": "w", "type": 7 },
 --!     { "name": "FF",   		"bits": 1, "attr": "w", "type": 2 },
---!     { "name": "Size",   	"bits": 8, "attr": "w", "type": 3 },
---!     { "name": "Reserved",   "bits": 19, "attr": "", "type":"not used" }
+--!     { "name": "Size",   	"bits": 5, "attr": "w", "type": 3 },
+--!     { "name": "Reserved",   "bits": 22, "attr": "", "type":"not used" }
 --! ]}
 --! WRITE
 --! --

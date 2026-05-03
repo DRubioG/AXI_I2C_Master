@@ -33,7 +33,7 @@ entity I2C_phy is
 --! Indicador de nuevo valor en el puerto *READ_DATA_O*.
         READ_DATA_OK_O : out std_logic;
 --! Tamaño de datos a leer por I2C.
-        SIZE_I : in std_logic_vector(7 downto 0);
+        SIZE_I : in std_logic_vector(4 downto 0);
 --! Orden de lectura del módulo, si se recibe esta señal, el módulo controrá tantas veces como ponga
 --! en el puerto *SIZE_I*. Activo a nivel alto.
         READ_I : in std_logic;

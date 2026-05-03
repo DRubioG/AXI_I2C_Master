@@ -26,8 +26,8 @@ begin
 IOBUF_inst : IOBUF
   port map
   (
-    O  => SDA_I, -- 1-bit output: Buffer output
-    I  => SDA_O, -- 1-bit input: Buffer input
+    O  => SDA_O, -- 1-bit output: Buffer output
+    I  => SDA_I, -- 1-bit input: Buffer input
     IO => SDA_IO, -- 1-bit inout: Buffer inout (connect directly to top-level port)
     T  => SDA_T -- 1-bit input: 3-state enable input
   );

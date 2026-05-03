@@ -10,7 +10,7 @@ entity I2C_IP is
     CLK_I        : in std_logic;
     RST_N_I      : in std_logic;
     EN_I         : in std_logic;
-    ADDRESS_I    : in std_logic_vector(7 downto 0);
+    ADDRESS_I    : in std_logic_vector(6 downto 0);
     WRITE_DATA_I : in std_logic_vector(7 downto 0);
     READ_DATA_O  : out std_logic_vector(7 downto 0);
     WRITE_I      : in std_logic;
@@ -18,7 +18,7 @@ entity I2C_IP is
     START_I      : in std_logic;
     READ_FIFO_I  : in std_logic;
     STOP_I       : in std_logic;
-    SIZE_I       : in std_logic_vector(7 downto 0);
+    SIZE_I       : in std_logic_vector(4 downto 0);
     ERROR_O      : out std_logic;
 
     SDA : inout std_logic;
@@ -41,7 +41,7 @@ begin
       EN_I         => EN_I,
       ADDRESS_I    => ADDRESS_I,
       WRITE_DATA_I => WRITE_DATA_I,
-      DATA_O  => READ_DATA_O,
+      DATA_O       => READ_DATA_O,
       WRITE_I      => WRITE_I,
       READ_I       => READ_I,
       READ_EN_I    => READ_FIFO_I,

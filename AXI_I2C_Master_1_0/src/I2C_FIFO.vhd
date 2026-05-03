@@ -30,7 +30,7 @@ end entity;
 
 architecture rtl of I2C_FIFO is
 --! Tamaño del dato del FIFO.
-  constant C_WIDTH : integer := 7;
+  constant C_WIDTH : integer := 8;
 --! Estructura de la memoria del FIFO.
   type t_fifo is array(0 to G_FIFO_WIDTH - 1) of std_logic_vector(C_WIDTH - 1 downto 0);
 --! Memoria del FIFO.
@@ -58,7 +58,7 @@ FIFO_PROCESS : process (CLK_I)
         r_diff       <= 0;
         DATA_O       <= (others => '0');
         for i in 0 to G_FIFO_WIDTH - 1 loop
-          r_fifo_rom <= (others => '0');
+          r_fifo_rom(i) <= (others => '0');
         end loop;
 
       elsif EN_I = '1' then

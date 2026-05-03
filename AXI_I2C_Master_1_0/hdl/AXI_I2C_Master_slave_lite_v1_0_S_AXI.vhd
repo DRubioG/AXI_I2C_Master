@@ -25,8 +25,8 @@
 --!     { "name": "SP",   		"bits": 1, "attr": "w", "type": 6 },
 --!     { "name": "RD",   		"bits": 1, "attr": "w", "type": 7 },
 --!     { "name": "FF",   		"bits": 1, "attr": "w", "type": 2 },
---!     { "name": "Size",   	"bits": 8, "attr": "w", "type": 3 },
---!     { "name": "Reserved",   "bits": 19, "attr": "", "type":"not used" }
+--!     { "name": "Size",   	"bits": 5, "attr": "w", "type": 3 },
+--!     { "name": "Reserved",   "bits": 22, "attr": "", "type":"not used" }
 --! ]}
 --! WRITE
 --! --
@@ -381,24 +381,21 @@ begin
     )
     port map
     (
-      CLK_I         => S_AXI_ACLK,
-      RST_N_I       => S_AXI_ARESETN,
-      EN_I          => slv_reg0(0),
-      ADDRESS_I     => slv_reg1(6 downto 0),
-      WRITE_DATA_I  => slv_reg1(14 downto 7),
-      READ_DATA_O   => slv_reg2(7 downto 0),
-      READ_I        => slv_reg0(3),
-      START_I       => slv_reg0(1),
-      READ_FIFO_I   => slv_reg0(4),
-      STOP_I        => slv_reg0(2),
-      SIZE_I        => slv_reg0(12 downto 5),
-      ERROR_O       => slv_reg2(8),
-      SDA           => SDA,
-      SCL           => SCL
+      CLK_I        => S_AXI_ACLK,
+      RST_N_I      => S_AXI_ARESETN,
+      EN_I         => slv_reg0(0),
+      ADDRESS_I    => slv_reg1(6 downto 0),
+      WRITE_DATA_I => slv_reg1(14 downto 7),
+      READ_DATA_O  => slv_reg2(7 downto 0),
+      WRITE_I      => slv_reg1(15),
+      READ_I       => slv_reg0(3),
+      START_I      => slv_reg0(1),
+      READ_FIFO_I  => slv_reg0(4),
+      STOP_I       => slv_reg0(2),
+      SIZE_I       => slv_reg0(9 downto 5),
+      ERROR_O      => slv_reg2(8),
+      SDA          => SDA,
+      SCL          => SCL
     );
-
-  
-    -- User logic ends
-  
-
+  -- User logic ends
 end arch_imp;
