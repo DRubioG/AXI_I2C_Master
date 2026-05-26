@@ -60,7 +60,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity AXI_I2C_Master is
+entity AXI_I2C_Master_v1_0 is
   generic (
     -- Users to add parameters here
 
@@ -107,9 +107,9 @@ entity AXI_I2C_Master is
     s_axi_rready  : in std_logic
     --! @end
   );
-end AXI_I2C_Master;
+end AXI_I2C_Master_v1_0;
 
-architecture arch_imp of AXI_I2C_Master is
+architecture arch_imp of AXI_I2C_Master_v1_0 is
 	
   --! Señal de conexión de SDA de entrada con el buffer tri-estado.
   signal s_sda_i : std_logic;

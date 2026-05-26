@@ -248,7 +248,7 @@ begin
                     re_state <= SM_ACK_MASTER;
                     if s_falling_edge = '1' then
                         re_state <= SM_READ_DATA;
-                        if r_cont_num_read >= to_integer(unsigned(SIZE_I)) then
+                        if r_cont_num_read >= to_integer(unsigned(SIZE_I))-1 then
                             re_state <= SM_STOP;
                         end if;
                     end if;
