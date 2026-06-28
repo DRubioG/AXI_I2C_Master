@@ -177,7 +177,7 @@ architecture arch_imp of AXI_I2C_Master_slave_lite_v1_0_S_AXI is
   signal slv_reg1   : std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);
   signal slv_reg2   : std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);
   signal slv_reg3   : std_logic_vector(C_S_AXI_DATA_WIDTH - 1 downto 0);
-  signal byte_index : integer;
+  -- signal byte_index : integer;
 
   signal mem_logic : std_logic_vector(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 

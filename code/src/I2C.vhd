@@ -117,6 +117,7 @@ begin
   FIFO_RESET_GENERATOR : s_reset_fifo <= not START_I and RST_N_I;
 
   --! Este es el FIFO que coge los datos que entran por el I2C hasta que son leídos.
+  --! Si se recibe la orden de iniciar y el FIFO no ha sido leído, se borra.
   I2C_FIFO_inst : entity work.I2C_FIFO
     generic map(
       G_FIFO_WIDTH => 32
