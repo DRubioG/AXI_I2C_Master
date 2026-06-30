@@ -1,3 +1,40 @@
+--! Interfaz de lectura
+--! ==
+--! La lectura se hace de forma continua, y los datos de salen de forma continua.
+--! El tamaño depende del puerto *READ_SIZE_I*.
+--! { signal: [
+--!     ['Interface',
+--!     ['Input',
+--!     {name: "ADDRESS_I",     wave: "3...x|....|....", data: ["address"]},
+--!     {name: "READ_SIZE_I",   wave: "4...x|....|....", data: ["read size"]},
+--!     {name: "READ",          wave: "0h..l|....|...."},
+--!     {name: "START_I",       wave: "0.hl.|....|...."}],
+--!     ['Output',
+--!     {name: "READ_DATA_O",   wave: "0....|5..x|5..0", data: ["data 1", "data N"]},
+--!     {name: "READ_DATA_OK_O",wave: "0....|.hl.|.hl."},
+--!     {name: "READY_O",       wave: "h..l.|....|...h"}]
+--! ]
+--!  ]}
+--! Interfaz de escritura
+--! ==
+--! La escritura se realiza cada vez que se pone un nivel alto en el puerto *WRITE*.
+--! { signal: [
+--!     ['Interface',
+--!     ['Input',
+--!     {name: "ADDRESS_I",     wave: "3...x|...|...|...", data: ["address"]},
+--!     {name: "WRITE_DATA_I",  wave: "4...x|4.x|4.x|...", data: ["data 1", "data 2", "data N"]},
+--!     {name: "WRITE_I",       wave: "0h..l|.hl|.hl|..."},
+--!     {name: "STOP_I",        wave: "0....|...|...|.hl"},
+--!     {name: "START_I",       wave: "0.hl.|...|...|..."}],
+--!     ['Output',
+--!     {name: "READY_O",       wave: "h..l.|...|...|..h"}],
+--!     {}
+--! ]
+--!  ]}
+
+
+--! Interfaz de comunicaciones I2C
+--! ==
 --! { signal: [
 --!   { name: "SCL",        wave: "h0p.................1." },
 --!   { name: "SDA",        wave: "1033333334566666666501", data: ["AD1", "AD2", "AD3", "AD4", "AD5", "AD6", "AD7", "R/W", "ACK", "D7", "D6", "D5", "D4", "D3", "D2", "D1", "D0", "ACK"], phase: 0.5},
@@ -33,8 +70,8 @@ entity I2C_phy is
     --! Indicador de nuevo valor en el puerto *READ_DATA_O*.
     READ_DATA_OK_O : out std_logic;
     --! Tamaño de datos a leer por I2C.
-    SIZE_I : in std_logic_vector(4 downto 0);
-    --! Orden de lectura del módulo, si se recibe esta señal, el módulo controrá tantas veces como ponga
+    READ_SIZE_I : in std_logic_vector(4 downto 0);
+    --! Orden de lectura del módulo, si se recibe esta señal, el módulo contará tantas veces como ponga
     --! en el puerto *SIZE_I*. Activo a nivel alto.
     READ_I : in std_logic;
     --! Orden de escritura del módulo, la activación de esta señal solo transmite un dato.
@@ -44,7 +81,7 @@ entity I2C_phy is
     --! del módulo. Activa a nivel alto.
     START_I : in std_logic;
     --! Señal que indica la finalización de la comunicación. Activa a nivel alto.
-    STOP_I : in std_logic;
+    WRITE_STOP_I : in std_logic;
     --! Este puerto indica que el I2C ha encontrado un error. Activo a nivel alto.
     ERROR_O : out std_logic;
     --! Este puerto indica si el I2C está disponible para transmitir. Activo a nivel alto.
@@ -129,7 +166,8 @@ architecture rtl of I2C_phy is
   constant C_SDA_WRITE : std_logic := '0';
   --! Constante con el valor de triestado para leer.
   constant C_SDA_READ : std_logic := not C_SDA_WRITE;
-
+  --! Tamaño de las direcciones del I2C.
+  constant C_SIZE_ADDRESS_I2C : integer := 7;
   --! Constante con el número de ciclos para generar un periodo del I2C.
   constant C_PULSES_I2C : integer := G_FPGA_CLK/G_I2C_CLK;
   --! Constante con el número de ciclos para un semiperiodo.
@@ -149,6 +187,8 @@ architecture rtl of I2C_phy is
   signal s_start : std_logic;
   --! Señal de entrada de finalización de duración un ciclo de reloj a nivel alto.
   signal s_stop : std_logic;
+  --! Estas señales guardan los valores de escritura o lectura.
+  signal r_read, r_write : std_logic;
 begin
   --! @brief Detector de flancos de la señal de arranque.
   --!
@@ -169,7 +209,7 @@ begin
     port map
     (
       CLK_I          => CLK_I,
-      INPUT_SIGNAL_I => STOP_I,
+      INPUT_SIGNAL_I => WRITE_STOP_I,
       RISING_EDGE_O  => s_stop,
       FALLING_EDGE_O => open,
       EDGES_O        => open
@@ -203,7 +243,7 @@ begin
 
           when SM_ADDRESS =>
             re_state <= SM_ADDRESS;
-            if r_cont_address >= 7 then
+            if r_cont_address >= C_SIZE_ADDRESS_I2C then
               re_state <= SM_RW;
             end if;
 
@@ -216,10 +256,20 @@ begin
           when SM_ACK_SLAVE =>
             re_state <= SM_ACK_SLAVE;
             if s_falling_edge = '1' then
-              re_state <= SM_STOP;
+              re_state <= SM_ERROR;
               if SDA_I = '0' then
                 re_state <= SM_WAIT_ORDER;
               end if;
+            end if;
+
+          when SM_WAIT_ORDER =>
+            re_state <= SM_WAIT_ORDER;
+            if WRITE_STOP_I = '1' then
+              re_state <= SM_WAIT_STOP;
+            elsif r_read = '1' then
+              re_state <= SM_READ_DATA;
+            elsif r_read = '1' then
+              re_state <= SM_WRITE_DATA;
             end if;
 
           when SM_WRITE_DATA =>
@@ -238,19 +288,9 @@ begin
             re_state <= SM_ACK_MASTER;
             if s_falling_edge = '1' then
               re_state <= SM_READ_DATA;
-              if r_cont_num_read >= to_integer(unsigned(SIZE_I)) - 1 then
+              if r_cont_num_read >= to_integer(unsigned(READ_SIZE_I)) - 1 then
                 re_state <= SM_WAIT_STOP;
               end if;
-            end if;
-
-          when SM_WAIT_ORDER =>
-            re_state <= SM_WAIT_ORDER;
-            if STOP_I = '1' then
-              re_state <= SM_WAIT_STOP;
-            elsif READ_I = '1' then
-              re_state <= SM_READ_DATA;
-            elsif WRITE_I = '1' then
-              re_state <= SM_WRITE_DATA;
             end if;
 
           when SM_WAIT_STOP =>
@@ -258,6 +298,7 @@ begin
             if r_cont_wait_stop >= C_START - 1 then
               re_state <= SM_STOP;
             end if;
+
           when SM_STOP =>
             re_state <= SM_STOP;
             if r_cont_stop >= C_START - 1 then
@@ -265,9 +306,28 @@ begin
             end if;
 
           when SM_ERROR =>
-          when others   =>
+            re_state <= SM_STOP;
+
+          when others =>
             re_state <= SM_IDLE;
         end case;
+      end if;
+    end if;
+  end process;
+
+  --! @brief Este process almacena las órdenes de escritura
+  --! y lectura para evitar modificaciones durante la operativa.
+  biestable_d_operaciones : process (CLK_I)
+  begin
+    if rising_edge(CLK_I) then
+      if RST_N_I = '0' then
+        r_read  <= '0';
+        r_write <= '0';
+      elsif EN_I = '1' then
+        if re_state = SM_START then
+          r_read  <= READ_I;
+          r_write <= WRITE_I;
+        end if;
       end if;
     end if;
   end process;
@@ -587,8 +647,9 @@ begin
       if RST_N_I = '0' then
         ERROR_O <= '0';
       elsif EN_I = '1' then
-        ERROR_O <= '0';
-        if re_state = SM_ERROR then
+        if re_state = SM_START then
+          ERROR_O <= '0';
+        elsif re_state = SM_ERROR then
           ERROR_O <= '1';
         end if;
       end if;

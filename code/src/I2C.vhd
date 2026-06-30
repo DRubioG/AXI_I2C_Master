@@ -15,7 +15,7 @@ entity I2C is
     RST_N_I : in std_logic;
     --! Habilitación de este módule. Activo a nivel alto.
     EN_I : in std_logic;
-    
+
     -- Control
     --! Dirección del esclavo sobre el que se quiere escribir/leer.
     ADDRESS_I : in std_logic_vector(6 downto 0);
@@ -27,24 +27,24 @@ entity I2C is
     WRITE_I : in std_logic;
     --! Indicador de lectura por I2C. Activa a nivel alto.
     READ_I : in std_logic;
-    --! Indicador para la lectura por I2C de datos del FIFO. Acivo a nivel alto.
+    --! Indicador para la lectura por I2C de datos del FIFO. Activo a nivel alto.
     READ_EN_I : in std_logic;
     --! Indicador de arranque del I2C. Activo a nivel alto.
     START_I : in std_logic;
     --! Número de datos a leer.
-    SIZE_I : in std_logic_vector(4 downto 0);
+    READ_SIZE_I : in std_logic_vector(4 downto 0);
     --! Este puerto indica que el I2C ha encontrado un error. Activo a nivel alto.
     ERROR_O : out std_logic;
     --! Este puerto indica si el I2C está disponible para transmitir. Activo a nivel alto.
     READY_O : out std_logic;
     --! Indicador de finalización de lectura I2C.
-    STOP_I : in std_logic;
+    WRITE_STOP_I : in std_logic;
 
     -- I2C
     --! Puerto de datos de I2C.
-    SDA_T  : out std_logic;
-    SDA_I  : in std_logic;
-    SDA_O  : out std_logic;
+    SDA_T : out std_logic;
+    SDA_I : in std_logic;
+    SDA_O : out std_logic;
     --! Puerto de reloj de I2C.
     SCL : out std_logic
   );
@@ -83,11 +83,11 @@ begin
       WRITE_DATA_I   => WRITE_DATA_I,
       READ_DATA_O    => s_read_data,
       READ_DATA_OK_O => s_read_data_ok,
-      SIZE_I         => SIZE_I,
+      READ_SIZE_I    => READ_SIZE_I,
       READ_I         => READ_I,
       WRITE_I        => WRITE_I,
       START_I        => START_I,
-      STOP_I         => STOP_I,
+      WRITE_STOP_I   => WRITE_STOP_I,
       ERROR_O        => ERROR_O,
       READY_O        => READY_O,
       SDA_I          => SDA_I,

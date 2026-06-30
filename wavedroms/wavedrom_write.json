@@ -1,0 +1,13 @@
+{ signal: [
+    ['Interface',
+    ['Input',
+    {name: "ADDRESS_I",     wave: "3...x|...|...|...", data: ["address"]},
+    {name: "WRITE_DATA_I",  wave: "4...x|4.x|4.x|...", data: ["data 1", "data 2", "data N"]},
+    {name: "WRITE_I",       wave: "0h..l|.hl|.hl|..."},
+    {name: "STOP_I",        wave: "0....|...|...|.hl"},
+    {name: "START_I",       wave: "0.hl.|...|...|..."}],
+    ['Output',
+    {name: "READY_O",       wave: "h..l.|...|...|..h"}],
+    {}
+]
+ ]}

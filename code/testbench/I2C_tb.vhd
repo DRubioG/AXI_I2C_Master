@@ -50,10 +50,10 @@ begin
       READ_I       => READ_I,
       READ_EN_I    => READ_EN_I,
       START_I      => START_I,
-      SIZE_I       => SIZE_I,
+      READ_SIZE_I       => SIZE_I,
       ERROR_O      => ERROR_O,
       READY_O      => READY_O,
-      STOP_I       => STOP_I,
+      WRITE_STOP_I       => STOP_I,
       SDA_T        => SDA_T,
       SDA_I        => SDA_I,
       SDA_O        => SDA_O,
@@ -65,7 +65,7 @@ begin
   EN_I      <= '1';
   ADDRESS_I <= "0110101";
 
-      READ_EN_I <= '1';
+  READ_EN_I <= '1';
 
   SDA_I  <= '0';
   SIZE_I <= (3 => '1', others => '0');

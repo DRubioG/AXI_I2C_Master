@@ -1,0 +1,7 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1782768514" />
+    <testcase name="i2c_write" classname="test_i2c" file="/home/drg/Documentos/GitHub/AXI_I2C_Master/sim/cocotb/test_i2c.py" lineno="94" time="11.273676872253418" sim_time_ns="2817530.000001" ratio_time="249921.12439690877" />
+    <testcase name="i2c_read" classname="test_i2c" file="/home/drg/Documentos/GitHub/AXI_I2C_Master/sim/cocotb/test_i2c.py" lineno="110" time="0.00012683868408203125" sim_time_ns="1.000240445137024e-06" ratio_time="0.0078859257518797" />
+  </testsuite>
+</testsuites>

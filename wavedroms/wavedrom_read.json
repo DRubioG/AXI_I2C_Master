@@ -1,0 +1,14 @@
+{ signal: [
+    ['Interface',
+    ['Input',
+    {name: "ADDRESS_I",     wave: "3...x|....|....", data: ["address"]},
+    {name: "READ_SIZE_I",   wave: "4...x|....|....", data: ["read size"]},
+    {name: "READ",          wave: "0h..l|....|...."},
+    {name: "READ",          wave: "0h..l|....|...."},
+    {name: "START_I",       wave: "0.hl.|....|...."}],
+    ['Output',
+    {name: "READ_DATA_O",   wave: "0....|5..x|5..0", data: ["data 1", "data N"]},
+    {name: "READ_DATA_OK_O",wave: "0....|.hl.|.hl."},
+    {name: "READY_O",       wave: "h..l.|....|...h"}]
+]
+ ]}

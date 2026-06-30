@@ -1,0 +1,9 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1782768913" />
+    <testcase name="i2c_write" classname="test_i2c" file="/home/drg/Documentos/GitHub/AXI_I2C_Master/sim/cocotb/test_i2c.py" lineno="93" time="0.0015361309051513672" sim_time_ns="140.000001" ratio_time="91138.06676925407">
+      <failure message="Test failed with RANDOM_SEED=1782768913" />
+    </testcase>
+    <testcase name="i2c_read" classname="test_i2c" file="/home/drg/Documentos/GitHub/AXI_I2C_Master/sim/cocotb/test_i2c.py" lineno="111" time="0.0001456737518310547" sim_time_ns="9.999999974752427e-07" ratio_time="0.006864654647152865" />
+  </testsuite>
+</testsuites>
